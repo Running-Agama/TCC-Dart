@@ -21,10 +21,10 @@ const userRegister = async (req,res)=>{
         if(!name||!email||!password||!postal||!housenumber){
             return res.status(400).send('Todos os campos devem ser preenchidos')
         }
-        if(!validator.isStrongPassword){
+        if(!validator.isStrongPassword(password)){
             return res.status(400).send('Senha fraca, minimo de 8 caracteres, um caractere especial, uma letra maiuscula e um numero')
         }
-        if(!validator.isEmail){
+        if(!validator.isEmail(email)){
             return res.status(400).send('Formato de email incorreto')
         }
 
