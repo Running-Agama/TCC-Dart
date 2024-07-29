@@ -2,6 +2,7 @@ import userModel from "../models/userModel.js"
 import validator from "validator"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import { json } from "express"
 
 
 const createToken = (_id)=>{
@@ -45,4 +46,19 @@ const userRegister = async (req,res)=>{
     }
 }
 
-export default userRegister
+const listUsers = async (req,res)=>{
+
+    console.warn(req)
+
+    try{
+        const users = await userModel.find()
+        res.status(200).json(users)
+    }catch(error){
+        console.log(error)
+        res.status(500).json(error)
+    }
+        
+    
+}
+
+export {listUsers,userRegister}

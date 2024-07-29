@@ -19,9 +19,8 @@ app.listen(port, ()=>{
 app.get('/', (req,res)=>{
     res.send('ooi')
 })
+
 app.use('/api/users', userRoute)
-
-
 
 
 mongoose.connect(uri,{
