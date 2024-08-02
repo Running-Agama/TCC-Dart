@@ -48,8 +48,6 @@ const userRegister = async (req,res)=>{
 
 const listUsers = async (req,res)=>{
 
-    console.warn(req)
-
     try{
         const users = await userModel.find()
         res.status(200).json(users)
@@ -57,8 +55,29 @@ const listUsers = async (req,res)=>{
         console.log(error)
         res.status(500).json(error)
     }
-        
-    
 }
 
+const loginUser = async (req,res)=>{
+    const {email, password} = req.body
+    try{
+        let user = await userModel.findOne({email})
+        if(!user){
+            res.status(500).send('Usuario não encontrado')
+        }
+
+        const isValidPassword = await bcrypt.compare(password, user.password)
+
+        if(!isValidPassword){
+            res.status(500).send('Senha incorreta')
+        }
+
+        if(!email || !password){
+            res.status(500).send('Todos os campos devem estar preenchidos')
+        }
+
+        const token = createToken(user._id)
+
+        res.status(200).json({_id: user._id, name = user.name, email, token})
+    }
+}
 export {listUsers,userRegister}
