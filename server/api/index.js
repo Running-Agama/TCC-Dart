@@ -8,7 +8,7 @@ const app = express()
 app.use(express.json())
 dotenv.config(path)
 
-
+app.use(cors())
 const port = 3001
 const uri = process.env.ATLAS_URI
 
