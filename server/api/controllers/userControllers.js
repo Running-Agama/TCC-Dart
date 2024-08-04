@@ -82,4 +82,4 @@ const loginUser = async (req,res)=>{
         console.log(erro)
     }
 }
-export {listUsers,userRegister}
+export {listUsers,userRegister, loginUser}
