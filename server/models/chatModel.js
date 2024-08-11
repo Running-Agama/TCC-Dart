@@ -2,7 +2,8 @@ import mongoose from 'mongoose'
 
 const chatSchema = new mongoose.Schema(
     {
-        members: {Array}
+        members: Array,
+        status: {type: String, required: true}
     },
     {
         timestamps: true 

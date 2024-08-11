@@ -4,6 +4,8 @@ import dotenv from 'dotenv'
 import path from 'path'
 import cors from 'cors'
 import userRoute from './routes/userRoute.js'
+import chatRoute from './routes/chatRoute.js'
+
 const app = express()
 app.use(express.json())
 dotenv.config(path)
@@ -21,11 +23,10 @@ app.get('/', (req,res)=>{
 })
 
 app.use('/api/users', userRoute)
-
+app.use('/api/chats', chatRoute)
 
 mongoose.connect(uri,{
-    useNewUrlParser: true,
-    useUnifiedTopology: true
+
 })
 .then(()=> console.log('Conectado no MongoDB'))
 .catch((erro)=> {

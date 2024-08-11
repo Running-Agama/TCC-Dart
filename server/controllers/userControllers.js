@@ -2,7 +2,7 @@ import userModel from "../models/userModel.js"
 import validator from "validator"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { json } from "express"
+
 
 
 const createToken = (_id)=>{
@@ -38,7 +38,7 @@ const userRegister = async (req,res)=>{
 
         const token = createToken(user._id)
 
-        res.status(200).send({id: user._id, name, email, password, postal, housenumber})
+        res.status(200).send({id: user._id, name, email, password, postal, housenumber, token})
     }
     catch(erro){
         console.log(erro)
