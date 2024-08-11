@@ -1,5 +1,7 @@
 import chatModel from "../models/chatModel.js"
-
+import express from 'express'
+const app = express()
+app.use(express.json())
 //Pra rapazeada do frontend, peço encarecidamente que não modifiquem isso aqui sem me consultar
 //porque até onde vi ta tudo certinho nos requests, se deu erro no React o problema são vcs
 
@@ -33,14 +35,16 @@ const createChat = async(req,res)=>{
 
 const updateChatStatus = async(req,res)=>{
     try{
-        const chatId = req.params.chatId
-        const status = req.params.newStatus
+        const _id = { _id: req.body.chatId}
+        console.log(_id)
+        const status = { status: req.body.status}
+        console.log(status)
         
-        chatModel.findByIdAndUpdate(chatId, status, {new: true})
-            .then( (updatedDocument) => res.status(200).send(updatedDocument))
-            .catch( ( error)=> res.status(400).send(error))
+       await chatModel.findOneAndUpdate(_id, status, {new:true})
+        
+        res.status(200).send('feito')
     }catch(erro){
-        console.log(erro)
+        console.log('erro', erro)
     }
 }
 export {updateChatStatus, createChat}
