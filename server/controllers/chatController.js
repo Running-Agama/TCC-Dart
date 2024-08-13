@@ -45,6 +45,9 @@ const updateChatStatus = async(req,res)=>{
         res.status(200).send('feito')
     }catch(erro){
         console.log('erro', erro)
+        res.status(500).send(erro)
     }
 }
+
+
 export {updateChatStatus, createChat}

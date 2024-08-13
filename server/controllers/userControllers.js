@@ -1,8 +1,8 @@
-import userModel from "../models/userModel.js"
+import {userModel, adminModel} from "../models/userModel.js"
 import validator from "validator"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-
+import dotenv from 'dotenv'
 
 
 const createToken = (_id)=>{
@@ -80,6 +80,29 @@ const loginUser = async (req,res)=>{
         res.status(200).json({_id: user._id, name, email, token})
     }catch(erro){
         console.log(erro)
+    }
+}
+
+const registerAdmin = async(req,res)=>{
+    const {name, email, password, auth} = req.body
+    try{
+        if(!auth == process.env.REGISTER_ADMIN_PASSWORD){
+            res.send(500).send('Não autorizado')
+        }
+        let user = await adminModel.findOne({email})
+
+        //Não deixar claro o problema pra evitar prechas de segurança, n sei a definição certa disso
+
+        if(user){
+            res.status(500).send('Erro')
+        }
+
+        
+
+
+        const isValidPassword = validator.isStrongPassword(password)
+    }catch{
+
     }
 }
 export {listUsers,userRegister, loginUser}
