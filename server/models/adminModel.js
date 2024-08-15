@@ -8,3 +8,5 @@ const adminSchema = new mongoose.Schema({
 })
 
 const adminModel = mongoose.model("admins", adminSchema)
+
+export default adminModel

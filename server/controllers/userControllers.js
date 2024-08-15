@@ -1,4 +1,5 @@
-import {userModel, adminModel} from "../models/userModel.js"
+import userModel from "../models/userModel.js"
+import adminModel from "../models/adminModel.js"
 import validator from "validator"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
@@ -105,4 +106,4 @@ const registerAdmin = async(req,res)=>{
 
     }
 }
-export {listUsers,userRegister, loginUser}
+export {listUsers,userRegister, loginUser, registerAdmin}
