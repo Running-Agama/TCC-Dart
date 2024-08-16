@@ -10,8 +10,8 @@ const createToken = (_id)=>{
 }
 
 const userRegister = async (req,res)=>{
+    //totalmente errado, qualquer um poderia só dar um post e deixar o status como admin, adequado seria padronizar como 'user' e só poder alterar isso com uma senha especial
     const {name, email, password,state, ranking, postal, housenumber} = req.body
-    const rankingList = ['admin', 'user']
     const stateList = [
         'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 
         'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 
@@ -23,7 +23,7 @@ const userRegister = async (req,res)=>{
         if(user){
             return res.status(400).send('Email já utilizado')
         }
-        if(!name||!email||!password||!postal||!housenumber|| !state || !ranking){
+        if(!name||!email||!password||!postal||!housenumber || !ranking){
             return res.status(400).send('Todos os campos devem ser preenchidos')
         }
         if(!validator.isStrongPassword(password)){
@@ -32,11 +32,9 @@ const userRegister = async (req,res)=>{
         if(!validator.isEmail(email)){
             return res.status(400).send('Formato de email incorreto')
         }
-        if(!rankingList.includes(ranking)){
-            return res.status(400).send('Cargo invalido')
-        }
+
         if(!stateList.includes(state)){
-            return res,status(400).send('Estado invalido')
+            return res.status(400).send('Estado invalido')
         }
 
 
@@ -49,7 +47,7 @@ const userRegister = async (req,res)=>{
 
         const token = createToken(user._id)
 
-        res.status(200).send({id: user._id, name, email, password, state,ranking, postal, housenumber, token})
+        res.status(200).send({id: user._id, name, email, password, state,ranking: "user", postal, housenumber, token})
     }
     catch(erro){
         console.log(erro)
