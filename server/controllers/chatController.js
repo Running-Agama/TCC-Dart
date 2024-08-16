@@ -30,7 +30,7 @@ const createChat = async(req,res)=>{
     }
 }
 
-//TODO: modificar o codigo pra verificar se o status é valido (pending, concluded e denied)
+//TODO: modificar o codigo pra verificar se o status é valido (pending, concluded e closed)
 
 
 const updateChatStatus = async(req,res)=>{
@@ -39,7 +39,9 @@ const updateChatStatus = async(req,res)=>{
         console.log(_id)
         const status = { status: req.body.status}
 
-        console.log(status)
+        if(status!='pending' || status!='concluded' || status != 'closed'){
+            res.status(400).send('Status invalido')
+        }
         
        await chatModel.findOneAndUpdate(_id, status, {new:true})
         
