@@ -11,7 +11,7 @@ const createToken = (_id)=>{
 
 const userRegister = async (req,res)=>{
     //totalmente errado, qualquer um poderia só dar um post e deixar o status como admin, adequado seria padronizar como 'user' e só poder alterar isso com uma senha especial
-    const {name, email, password,state, ranking, postal, housenumber} = req.body
+    const {name, email, password,state, ranking,rankingKey,  postal, housenumber} = req.body
     const stateList = [
         'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 
         'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 
@@ -20,10 +20,19 @@ const userRegister = async (req,res)=>{
     let user = await userModel.findOne({email})
 
     try{
+        let fRanking = 'user'
         if(user){
             return res.status(400).send('Email já utilizado')
         }
-        if(!name||!email||!password||!postal||!housenumber || !ranking){
+        if(ranking == 'admin' || ranking == 'user'){
+           if(rankingKey != process.env.RANKING_KEY){
+            return res.status(401).send('key invalida')
+           }
+        }
+        else{
+            fRanking = 'admin'
+        }
+        if(!name||!email|| !password||!postal||!housenumber){
             return res.status(400).send('Todos os campos devem ser preenchidos')
         }
         if(!validator.isStrongPassword(password)){
@@ -38,7 +47,7 @@ const userRegister = async (req,res)=>{
         }
 
 
-        user = new userModel({name, email, password, state, ranking, postal, housenumber})
+        user = new userModel({name, email, password, state, postal, housenumber})
         const salt = await bcrypt.genSalt(10)
 
         user.password = await bcrypt.hash(user.password, salt)
@@ -47,7 +56,7 @@ const userRegister = async (req,res)=>{
 
         const token = createToken(user._id)
 
-        res.status(200).send({id: user._id, name, email, password, state,ranking: "user", postal, housenumber, token})
+        res.status(200).send({id: user._id, name, email, password, state,ranking: fRanking, postal, housenumber, token})
     }
     catch(erro){
         console.log(erro)

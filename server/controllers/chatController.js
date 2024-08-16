@@ -38,6 +38,7 @@ const updateChatStatus = async(req,res)=>{
         const _id = { _id: req.body.chatId}
         console.log(_id)
         const status = { status: req.body.status}
+
         console.log(status)
         
        await chatModel.findOneAndUpdate(_id, status, {new:true})
