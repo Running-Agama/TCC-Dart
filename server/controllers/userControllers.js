@@ -1,9 +1,7 @@
 import userModel from "../models/userModel.js"
-import adminModel from "../models/adminModel.js"
 import validator from "validator"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import dotenv from 'dotenv'
 
 
 const createToken = (_id)=>{
@@ -12,15 +10,20 @@ const createToken = (_id)=>{
 }
 
 const userRegister = async (req,res)=>{
-    const {name, email, password, postal, housenumber} = req.body
-
+    const {name, email, password,state, ranking, postal, housenumber} = req.body
+    const rankingList = ['admin', 'user']
+    const stateList = [
+        'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 
+        'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 
+        'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
+      ]
     let user = await userModel.findOne({email})
 
     try{
         if(user){
             return res.status(400).send('Email já utilizado')
         }
-        if(!name||!email||!password||!postal||!housenumber){
+        if(!name||!email||!password||!postal||!housenumber|| !state || !ranking){
             return res.status(400).send('Todos os campos devem ser preenchidos')
         }
         if(!validator.isStrongPassword(password)){
@@ -29,8 +32,15 @@ const userRegister = async (req,res)=>{
         if(!validator.isEmail(email)){
             return res.status(400).send('Formato de email incorreto')
         }
+        if(!rankingList.includes(ranking)){
+            return res.status(400).send('Cargo invalido')
+        }
+        if(!stateList.includes(state)){
+            return res,status(400).send('Estado invalido')
+        }
 
-        user = new userModel({name, email, password, postal, housenumber})
+
+        user = new userModel({name, email, password, state, ranking, postal, housenumber})
         const salt = await bcrypt.genSalt(10)
 
         user.password = await bcrypt.hash(user.password, salt)
@@ -39,7 +49,7 @@ const userRegister = async (req,res)=>{
 
         const token = createToken(user._id)
 
-        res.status(200).send({id: user._id, name, email, password, postal, housenumber, token})
+        res.status(200).send({id: user._id, name, email, password, state,ranking, postal, housenumber, token})
     }
     catch(erro){
         console.log(erro)
@@ -84,26 +94,5 @@ const loginUser = async (req,res)=>{
     }
 }
 
-const registerAdmin = async(req,res)=>{
-    const {name, email, password, auth} = req.body
-    try{
-        if(!auth == process.env.REGISTER_ADMIN_PASSWORD){
-            res.send(500).send('Não autorizado')
-        }
-        let user = await adminModel.findOne({email})
 
-        //Não deixar claro o problema pra evitar prechas de segurança, n sei a definição certa disso
-
-        if(user){
-            res.status(500).send('Erro')
-        }
-
-        
-
-
-        const isValidPassword = validator.isStrongPassword(password)
-    }catch{
-
-    }
-}
-export {listUsers,userRegister, loginUser, registerAdmin}
+export {listUsers,userRegister, loginUser}
